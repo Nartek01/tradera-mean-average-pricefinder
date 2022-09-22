@@ -1,2 +1,4 @@
 # tradera-mean-average-pricefinder
 Early iteration of the swedish bidding site tradera.se, this repo fetches multiples products that's reached it's bidding goal and is purchased, sum up the prices of all the sold products and divide the sum by the total item fetched giving a mean estimation of what the average pays for the item you're looking for.
+
+This is the method I want to sell anything and need to get an estimation of the pricing, what it means is that you search for a product and compare what the average joe is paying for it and then you have a starting point for price estimation, I usually do this with 10 latest sold products but since there's so many more products that's sold an automation that can run a simple math calculation is better. I wanted to buy an iphone 13 pro max and wants to know what people are willing to pay for the device at the time being.
