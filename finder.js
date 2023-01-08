@@ -7,15 +7,17 @@ myHeaders.append(
   "trd_at=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHAiOiJUb3VjaFdlYiIsImV4cCI6IjIwMjItMDktMjNUMTU6Mjc6MjNaIn0.KTcKiygK1oX6GZiJFDYN8St6rc72E09eVFIa32vrmGM; ASP.NET_SessionId=tp2kh2sortgl2a2i24ov4cxa; experiment_bucket=1630803631; si=1; splittest_adsense_for_shopping_loggedin=103971053; splittest_attribute_suggestion_extractor=1371683031; splittest_category_boost_version=258865204; splittest_mobile_tag_based_navigation_filtering=496020282; splittest_search_ranking_variant=159725577; splittest_seller_suggestions_position=1731734216; splittest_similar_seller_suggestions=2121915416; splittest_tag_based_navigation_filtering_v2=638767102; splittest_userreg_auth_provider=1763854670"
 );
 
+/**@TODO Unable to fetch without the Allow Cors plugin, downlaod it and enable it */
 var requestOptions = {
   method: "GET",
   headers: myHeaders,
   redirect: "follow",
 };
 
+const q = "oculus+rift";
 
 fetch(
-  `https://www.tradera.com/search.json?q=playstation+4+disc+edition&itemStatus=Ended&fromPrice=5000&isActive=false&reservedPriceReached=true`,
+  `https://www.tradera.com/search.json?q=${q}&itemStatus=Ended&fromPrice=5000&isActive=false&reservedPriceReached=true`,
   requestOptions
 )
   .then((response) => response.json())
