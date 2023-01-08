@@ -13,8 +13,9 @@ var requestOptions = {
   redirect: "follow",
 };
 
+
 fetch(
-  "https://www.tradera.com/search.json?q=playstation+4+disc+edition&itemStatus=Ended&fromPrice=5000&isActive=false&reservedPriceReached=true",
+  `https://www.tradera.com/search.json?q=playstation+4+disc+edition&itemStatus=Ended&fromPrice=5000&isActive=false&reservedPriceReached=true`,
   requestOptions
 )
   .then((response) => response.json())
