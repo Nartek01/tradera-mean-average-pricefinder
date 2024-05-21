@@ -20,7 +20,7 @@ fetch(
   "https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=macbook+pro&itemStatus=Ended", requestOptions)
   .then((response) => response.json())
   .then((result) => {
-    console.log(result.items[0].price);
+    // console.log(result.pageProps.initialState.discover.items[0].price);
     const prices = [];
     document.write("<table>");
     result.items.forEach((item, index) => {
