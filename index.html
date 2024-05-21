@@ -35,6 +35,7 @@
     </table>
     
     <script>
+    let searchQuery = '';
     var myHeaders = new Headers();
     myHeaders.append(
       "Cookie",
@@ -49,8 +50,8 @@
     
     document.getElementById('searchForm').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent form submission
-      
-      const q = `"${document.getElementById('searchInput').value}"`;    
+      const q = `"${searchQuery}"`;
+      localStorage.setItem('lastSearch', searchQuery);
       
       fetch(`https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${encodeURIComponent(q)}&itemStatus=Ended&fromPrice=2508`, requestOptions)
         .then((response) => response.json())
@@ -58,7 +59,6 @@
           const prices = [];
           const tableBody = document.getElementById('resultsTable');
           tableBody.innerHTML = ''; // Clear previous results @TODO Make a history table, that shows what product you searched for and price sum
-          
           result.pageProps.initialState.discover.items.forEach((item, index) => {
             prices.push(item.price);
             const row = document.createElement('tr');
@@ -83,9 +83,28 @@
             <td>${avgPrice} kr</td>
           </tr>
           `;
+          localStorage.setItem('lastPrice', avgPrice);
           tableBody.appendChild(totalRow);
         })
         .catch((error) => console.log("Something went wrong...please try again", error));
+    });
+
+    /***
+     * Retain search history using localstorage 
+     * */
+    window.addEventListener('load', function() {
+      const lastPrice = localStorage.getItem('lastPrice');
+      const lastSearch = localStorage.getItem('lastSearch');
+      if (lastSearch && lastPrice) {
+        const tableBody = document.getElementById('resultsTable');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <th>Last Search</th>
+        <td>${lastSearch}</td>
+        <td>${lastPrice}</td>
+        `;
+      tableBody.insertBefore(row, tableBody.firstChild);
+      }
     });
     </script>
     
