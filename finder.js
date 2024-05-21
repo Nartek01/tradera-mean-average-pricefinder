@@ -14,7 +14,7 @@ var requestOptions = {
   redirect: "follow",
 };
 
-const q = "oculus+rift";
+const q = "iphone+12";
 
 fetch(
   `https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${q}&itemStatus=Ended&fromPrice=2508`, requestOptions)
