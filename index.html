@@ -37,7 +37,7 @@
         .then((result) => {
           const prices = [];
           const tableBody = document.getElementById('resultsTable');
-          tableBody.innerHTML = ''; // Clear previous results
+          tableBody.innerHTML = ''; // Clear previous results @TODO Make a history table, that shows what product you searched for and price sum
           
           result.pageProps.initialState.discover.items.forEach((item, index) => {
             prices.push(item.price);
