@@ -17,7 +17,7 @@ var requestOptions = {
 const q = "oculus+rift";
 
 fetch(
-  "https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=macbook+pro&itemStatus=Ended", requestOptions)
+  `https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${q}&itemStatus=Ended&fromPrice=2508`, requestOptions)
   .then((response) => response.json())
   .then((result) => {
     // console.log(result.pageProps.initialState.discover.items[0].price);
