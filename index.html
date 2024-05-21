@@ -21,7 +21,11 @@
   </head>
   <body>
     <form id="searchForm">
-      <input type="text" id="searchInput" placeholder="Enter search query">
+      <input type="text"
+      id="searchInput"
+      placeholder="Enter search query"
+      oninput="searchQuery = this.value"
+      >
       <button type="submit">Search</button>
     </form>
     
