@@ -23,7 +23,7 @@ fetch(
     // console.log(result.pageProps.initialState.discover.items[0].price);
     const prices = [];
     document.write("<table>");
-    result.items.forEach((item, index) => {
+    result.pageProps.initialState.discover.items.forEach((item, index) => {
       prices.push(item.price);
       /***@TODO Create real html nodes instead of writing document.write */
       document.write(`
