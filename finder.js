@@ -14,54 +14,52 @@ var requestOptions = {
   redirect: "follow",
 };
 
-const q = "iphone+12";
+const q = "iphone+15";
 
-fetch(
-  `https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${q}&itemStatus=Ended&fromPrice=2508`, requestOptions)
-  .then((response) => response.json())
-  .then((result) => {
-    // console.log(result.pageProps.initialState.discover.items[0].price);
-    const prices = [];
-    document.write("<table>");
-    result.pageProps.initialState.discover.items.forEach((item, index) => {
-      prices.push(item.price);
-      /***@TODO Create real html nodes instead of writing document.write */
+
+  fetch(
+    `https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${q}&itemStatus=Ended&fromPrice=2508`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      // console.log(result.pageProps.initialState.discover.items[0].price);
+      const prices = [];
+      document.write("<table>");
+      result.pageProps.initialState.discover.items.forEach((item, index) => {
+        prices.push(item.price);
+        /***@TODO Create real html nodes instead of writing document.write */
+        document.write(`
+        <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+  
+        td,
+        th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+  
+      </style>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          </tr><tr>
+          <td>${item.shortDescription}</td>
+          <td>${item.price}</td>
+        </tr>
+        `);
+      });
+      const sum = prices.reduce((partialSum, a) => partialSum + a, 0);
       document.write(`
-      <style>
-      table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-      }
-
-      td,
-      th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-
-    </style>
       <tr>
-      <th>Name</th>
-      <th>Price</th>
-      </tr>
-      <tr>
-      <td>${item.shortDescription}</td>
-      <td>${item.price}</td>
+        <th>Total</th>
+        </tr><tr>
+        <td>${sum / prices.length}</td>
       </tr>
       `);
-    });
-    const sum = prices.reduce((partialSum, a) => partialSum + a, 0);
-    document.write(`
-    <tr>
-    <th>Total</th>
-    </tr>
-    <tr>
-    <td>${sum / prices.length}</td>
-    </tr>
-    `);
-    // console.log(prices);
-    console.log(sum / prices.length);
-  })
-  .catch((error) => console.log("error", error));
+      // console.log(prices);
+      // console.log(sum / prices.length);
+    }).catch((error) => console.log("error", error));
