@@ -17,9 +17,7 @@ var requestOptions = {
 const q = "oculus+rift";
 
 fetch(
-  `https://www.tradera.com/search.json?q=${q}&itemStatus=Ended&fromPrice=5000&isActive=false&reservedPriceReached=true`,
-  requestOptions
-)
+  "https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=macbook+pro&itemStatus=Ended", requestOptions)
   .then((response) => response.json())
   .then((result) => {
     console.log(result.items[0].price);
