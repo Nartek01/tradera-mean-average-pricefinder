@@ -7,9 +7,81 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="container">
-      <script src="finder.js"></script>
-    </div>
-    <h1>Fetching price....</h1>
+    <form id="searchForm">
+      <input type="text" id="searchInput" placeholder="Enter search query">
+      <button type="submit">Search</button>
+    </form>
+    
+    <table id="resultsTable"></table>
+    
+    <script>
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Cookie",
+      "trd_at=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHAiOiJUb3VjaFdlYiIsImV4cCI6IjIwMjQtMDUtMjJUMTQ6MTM6MTlaIn0.1ywrEGfmtxp3x_tqbQXnSyzOYx_qQ55qeO8I_zO_i6c"
+    );
+    
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      const q = document.getElementById('searchInput').value;
+      
+      fetch(`https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${encodeURIComponent(q)}&itemStatus=Ended&fromPrice=2508`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          const prices = [];
+          const tableBody = document.getElementById('resultsTable');
+          tableBody.innerHTML = ''; // Clear previous results
+          
+          result.pageProps.initialState.discover.items.forEach((item, index) => {
+            prices.push(item.price);
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <th>Name</th>
+              <td>${item.shortDescription}</td>
+              </tr><tr>
+              <th>Price</th>
+              <td>${item.price}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+          
+          const sum = prices.reduce((partialSum, a) => partialSum + a, 0);
+          const avgPrice = sum / prices.length;
+          
+          const totalRow = document.createElement('tr');
+          totalRow.innerHTML = `
+          <tr>
+            <th>Total</th>
+            </tr><tr>
+            <td>${avgPrice}kr</td>
+          </tr>
+          `;
+          tableBody.appendChild(totalRow);
+        })
+        .catch((error) => console.log("error", error));
+    });
+    </script>
+    
+    <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    </style>
+    <h1>Search something...</h1>
   </body>
 </html>
