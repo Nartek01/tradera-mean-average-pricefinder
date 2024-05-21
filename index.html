@@ -30,7 +30,7 @@
     document.getElementById('searchForm').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent form submission
       
-      const q = document.getElementById('searchInput').value;
+      const q = `"${document.getElementById('searchInput').value}"`;    
       
       fetch(`https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${encodeURIComponent(q)}&itemStatus=Ended&fromPrice=2508`, requestOptions)
         .then((response) => response.json())
