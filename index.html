@@ -38,7 +38,6 @@
       <tbody></tbody>
     </table>
 
-
     <script>
       google.charts.load("current", { packages: ["corechart"] });
 
@@ -62,9 +61,7 @@
           var q = '"' + document.getElementById("searchInput").value + '"';
 
           fetch(
-            "https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=" +
-              encodeURIComponent(q) +
-              "&itemStatus=Ended&fromPrice=2508",
+            "https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=" + encodeURIComponent(q) + "&itemStatus=Ended&fromPrice=1800",
             requestOptions
           )
             .then(function (response) {
@@ -121,7 +118,6 @@
                 document.getElementById("chart")
               );
               chart.draw(data, options);
-
             })
             .catch(function (error) {
               console.log("error", error);
