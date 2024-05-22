@@ -76,7 +76,7 @@
               tableBody.innerHTML = ""; // Clear previous results @TODO Make a history table, that shows what product you searched for and price sum
               result.pageProps.initialState.discover.items.forEach(
                 (item, index) => {
-                  prices.push(item.price);
+                  prices.push([index + 1, item.price]);
                   const row = document.createElement("tr");
                   row.innerHTML = `
             <th>Name</th>
