@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
+    <title>Price Comparison</title>
     <script
       type="text/javascript"
       src="https://www.gstatic.com/charts/loader.js"
     ></script>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
     <style>
       table {
         font-family: arial, sans-serif;
@@ -25,25 +22,26 @@
     </style>
   </head>
   <body>
-    <div class="header">
-      <div id="line_top_x"></div>
-      <form id="searchForm">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Enter search query"
-          oninput="searchQuery = this.value"
-        />
-        <button type="submit">Search</button>
-      </form>
-    </div>
+    <form id="searchForm">
+      <input type="text" id="searchInput" placeholder="Enter search query" />
+      <button type="submit">Search</button>
+    </form>
 
     <table id="resultsTable">
-      <tr></tr>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
 
+    <div id="chart"></div>
+
     <script>
-      let searchQuery = "";
+      google.charts.load("current", { packages: ["corechart"] });
+
       var myHeaders = new Headers();
       myHeaders.append(
         "Cookie",
@@ -60,136 +58,77 @@
         .getElementById("searchForm")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent form submission
-          const q = `"${searchQuery}"`;
-          localStorage.setItem("lastSearch", searchQuery);
+
+          var q = '"' + document.getElementById("searchInput").value + '"';
 
           fetch(
-            `https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=${encodeURIComponent(
-              q
-            )}&itemStatus=Ended&fromPrice=2508`,
+            "https://www.tradera.com/_next/data/OfblPFrmCqoHx6InQRqbw/sv/search.json?q=" +
+              encodeURIComponent(q) +
+              "&itemStatus=Ended&fromPrice=2508",
             requestOptions
           )
-            .then((response) => response.json())
-            .then((result) => {
-              const prices = [];
-              const tableBody = document.getElementById("resultsTable");
-              tableBody.innerHTML = ""; // Clear previous results @TODO Make a history table, that shows what product you searched for and price sum
-              result.pageProps.initialState.discover.items.forEach(
-                (item, index) => {
-                  prices.push([index + 1, item.price]);
-                  const row = document.createElement("tr");
-                  row.innerHTML = `
-            <th>Name</th>
-              <td>${item.shortDescription}</td>
-              </tr><tr>
-              <th>Price</th>
-              <td>${item.price}</td>
-            `;
-                  tableBody.appendChild(row);
-                }
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (result) {
+              var prices = [];
+              var tableBody = document.querySelector("#resultsTable tbody");
+              tableBody.innerHTML = ""; // Clear previous results
+
+              result.pageProps.initialState.discover.items.forEach(function (
+                item,
+                index
+              ) {
+                prices.push([index + 1, item.price]);
+
+                var row = document.createElement("tr");
+                row.innerHTML =
+                  "<td>" +
+                  item.shortDescription +
+                  "</td><td>" +
+                  item.price +
+                  "</td>";
+                tableBody.appendChild(row);
+              });
+
+              var highestPrice = Math.max.apply(
+                null,
+                prices.map(function (price) {
+                  return price[1];
+                })
+              );
+              var lowestPrice = Math.min.apply(
+                null,
+                prices.map(function (price) {
+                  return price[1];
+                })
               );
 
-              const sum = prices.reduce((partialSum, a) => partialSum + a, 0);
-              const avgPrice = sum / prices.length;
+              var data = new google.visualization.DataTable();
+              data.addColumn("number", "Item");
+              data.addColumn("number", "Price");
+              data.addRows(prices);
 
-              const totalRow = document.createElement("tr");
-              totalRow.innerHTML = `
-          <tr>
-            <th>Total</th>
-            </tr><tr>
-            <td>${avgPrice} kr</td>
-          </tr>
-          `;
-              localStorage.setItem("lastPrice", avgPrice);
-              tableBody.appendChild(totalRow);
+              var options = {
+                title: "Price History",
+                curveType: "line",
+                legend: { position: "top" },
+                hAxis: { title: `Item ${q}` },
+                vAxis: { title: "Price" },
+              };
+
+              var chart = new google.visualization.LineChart(
+                document.getElementById("chart")
+              );
+              chart.draw(data, options);
+
+              console.log("Highest Price: " + highestPrice);
+              console.log("Lowest Price: " + lowestPrice);
             })
-            .catch((error) =>
-              console.log("Something went wrong...please try again", error)
-            );
+            .catch(function (error) {
+              console.log("error", error);
+            });
         });
-
-      /***
-       * Retain search history using localstorage
-       * */
-      window.addEventListener("load", function () {
-        const lastPrice = localStorage.getItem("lastPrice");
-        const lastSearch = localStorage.getItem("lastSearch");
-        if (lastSearch && lastPrice) {
-          const tableBody = document.getElementById("resultsTable");
-          const row = document.createElement("tr");
-          row.innerHTML = `
-        <th>Last Search</th>
-        <td>${lastSearch}</td>
-        <td>${lastPrice}</td>
-        `;
-          tableBody.insertBefore(row, tableBody.firstChild);
-        }
-        /**
-         * Google Line Chart
-         **/
-        google.charts.load("current", { packages: ["line"] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-          var data = new google.visualization.DataTable();
-          data.addColumn("number", "Day");
-          data.addColumn("number", "Guardians of the Galaxy");
-          data.addColumn("number", "The Avengers");
-          data.addColumn("number", "Transformers: Age of Extinction");
-
-          data.addRows([
-            [1, 37.8, 80.8, 41.8],
-            [2, 30.9, 69.5, 32.4],
-            [3, 25.4, 57, 25.7],
-            [4, 11.7, 18.8, 10.5],
-            [5, 11.9, 17.6, 10.4],
-            [6, 8.8, 13.6, 7.7],
-            [7, 7.6, 12.3, 9.6],
-            [8, 12.3, 29.2, 10.6],
-            [9, 16.9, 42.9, 14.8],
-            [10, 12.8, 30.9, 11.6],
-            [11, 5.3, 7.9, 4.7],
-            [12, 6.6, 8.4, 5.2],
-            [13, 4.8, 6.3, 3.6],
-            [14, 4.2, 6.2, 3.4],
-          ]);
-
-          var options = {
-            chart: {
-              title: `Price history of ${lastSearch}`,
-              subtitle: "in swedish kronor (SEK)",
-            },
-            width: 900,
-            height: 500,
-            axes: {
-              x: {
-                0: { side: "top" },
-              },
-            },
-          };
-
-          var chart = new google.charts.Line(
-            document.getElementById("line_top_x")
-          );
-
-          chart.draw(data, google.charts.Line.convertOptions(options));
-        }
-      });
     </script>
-
-    <style>
-      table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-      }
-
-      td,
-      th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-    </style>
   </body>
 </html>
